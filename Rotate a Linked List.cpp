@@ -71,3 +71,43 @@ int main() {
     printList(newHead);//list after rotating nodes
     return 0;
 }
+
+//Optimised approach
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        // Edge case
+        if (head == nullptr || head->next == nullptr || k == 0) {
+            return head;
+        }
+
+        // Find the length of the linked list
+        ListNode *current = head;
+        int length = 0;
+        while (current->next != nullptr) {
+            length++;
+            current = current->next;
+        }
+
+        // Make the last node point to the head of the linked list
+        current->next = head;
+
+        // If k is greater than the length of the linked list
+        k = k % (length + 1); // Update to (length + 1) to consider the original length
+
+        // Calculate the position to break the circular link
+        int end = length - k;
+
+        current = head;
+        // Traverse to the node before the new head
+        while (end--) {
+            current = current->next;
+        }
+
+        // Break the circular link and update the new head
+        head = current->next;
+        current->next = nullptr;
+
+        return head;
+    }
+};

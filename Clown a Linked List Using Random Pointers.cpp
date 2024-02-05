@@ -89,3 +89,71 @@ int main() {
 
     return 0;
 }
+
+
+//OPTIMISED APPROACH WITH SPACE COMPEXITY O(N)
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if (head == NULL) {
+            return NULL;
+        }
+
+        // Step 1: Create a Duplicate Node In-Place
+        Node* current = head;
+        while (current != NULL) {
+            // Create a new node with the same value
+            Node* copiedNode = new Node(current->val);
+
+            // Insert the node at the next position of the current
+            copiedNode->next = current->next;
+            current->next = copiedNode;
+
+            // Move to the next original node
+            current = current->next->next;
+        }
+
+        // Step 2: Adjust the Random Pointer
+        current = head;
+        while (current != NULL) {
+            // Adjust random pointers of the copied node
+            if (current->random != NULL) {
+                current->next->random = current->random->next;
+            }
+            current = current->next->next;
+        }
+
+        // Step 3: Separate Original and Copied Linked List
+        Node* originalHead = head;
+        Node* copiedHead = head->next;
+        Node* copiedCurrent = copiedHead;
+
+        while (originalHead != NULL) {
+            originalHead->next = copiedCurrent->next;
+            originalHead = originalHead->next;
+
+            if (originalHead != NULL) {
+                copiedCurrent->next = originalHead->next;
+                copiedCurrent = copiedCurrent->next;
+            }
+        }
+
+        return copiedHead;
+    }
+};
